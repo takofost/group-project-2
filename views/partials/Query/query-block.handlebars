@@ -1,0 +1,13 @@
+
+<div class="col-md-6 mx-auto">
+    <div class="card item-card itemsRent">
+        <img class="card-img-top" src={{picture_link}} alt="item for rent">
+        <div class="card-body">
+            <h5 class="card-title">{{item_name}}</h5>
+            <p class="card-text">{{description}}</p>
+            <p id="item-date-{{id}}" class="card-text" data-start="{{start_date}}" data-end="{{end_date}}">Availability: {{start_date}} - {{end_date}} </p>
+            <button class=" {{#if rent}} rentThisItem btn{{else}} rentThisItem btn disabled{{/if}}" data-id="{{id}}" data-newtodo="{{available}}" {{#if rent}}{{else}}disabled="true"{{/if}}>{{#if available}}RENT{{else}}Unavailable{{/if}}</button>
+        </div>
+        <div class="price-wrap">{{price}}</div>
+    </div>
+</div>

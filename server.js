@@ -1,47 +1,58 @@
+//Starting point of Node Express server.
+
 require("dotenv").config();
+//Dependencies
 var express = require("express");
+var bodyParser = require("body-parser");
 var exphbs = require("express-handlebars");
 
-var db = require("./models");
+var passport = require("passport");
+var flash = require("connect-flash");
+var cookieParser = require("cookie-parser");
+var session = require("express-session"); // cookie session
 
 var app = express();
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 8080;
 
-// Middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-app.use(express.static("public"));
+//
+var db = require("./models");
 
-// Handlebars
-app.engine(
-  "handlebars",
-  exphbs({
-    defaultLayout: "main"
-  })
-);
+require("./config/passport")(passport); // pass passport for configuration
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-// Routes
-require("./routes/apiRoutes")(app);
-require("./routes/htmlRoutes")(app);
+//TODO: To be enabled when public folder is created.
+app.use(express.static("public"));
 
-var syncOptions = { force: false };
+app.use(
+  session({
+    key: "user_sid",
+    secret: "4c3e54acc7155f8d22dcec98443c179e9a6309701dd84e7e9a6275bde25bdf3e5b22f352b3de5a92a8a8905181abad4d2ef778d095ce00cf4e9274c181e9eaab",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      expires: 600000
+    }
+  })
+);
 
-// If running a test, set syncOptions.force to true
-// clearing the `testdb`
-if (process.env.NODE_ENV === "test") {
-  syncOptions.force = true;
-}
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash());
+// app.use(methodO("_method"));
 
-// Starting the server, syncing our models ------------------------------------/
-db.sequelize.sync(syncOptions).then(function() {
-  app.listen(PORT, function() {
-    console.log(
-      "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
-      PORT,
-      PORT
-    );
+require("./controllers/html-routes")(app, passport);
+require("./controllers/account-controller")(app, passport);
+require("./controllers/item-controller")(app, passport);
+require("./controllers/search-controller")(app, passport);
+require("./controllers/transactions-controller")(app, passport);
+
+db.sequelize.sync().then(function() {
+  app.listen(PORT, function () {
+    console.log("Listening on localhost:" + PORT);
   });
 });
-
-module.exports = app;

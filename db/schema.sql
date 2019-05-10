@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS studentdb;
+CREATE DATABASE studentdb;

@@ -1,0 +1,68 @@
+{{> Navigation/nav-block search=true post=false account=false signup=false}}
+
+<div class="container">
+  <header class="create-acct-wrap header-wrap" align="center">
+    <h1 class="text-center">Rent Everything</h1>
+
+    <h2 class="text-center">Available Items for Rent:</h2>
+  </header>
+  <div class="row">
+    {{#each items}} 
+      {{#if available}} 
+        {{> Query/query-block rent=true}} 
+      {{else}}
+        {{> Query/query-block rented=false}}
+      {{/if}}
+    {{/each}}
+  </div>
+
+
+
+
+
+  <div class="modal" id="rentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Rent Out this Item</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div>
+            <h5>Available Date Between:</h5>
+            <div class="d-flex">
+              <div class="card col-sm-6">
+                <p id="avail_start_date"></p>
+              </div>
+              <div class="card col-sm-6">
+                <p id="avail_end_date"></p>
+              </div>
+            </div>
+          </div>
+
+          <form>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="inputStart">Start Date</label>
+                <input type="date" class="form-control" id="trans_start" name="inputStart" placeholder="Start Date">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="inputEnd">End Date</label>
+                <input type="date" class="form-control" id="trans_end" name="inputEnd" placeholder="End Date">
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button id="submitRent" type="button" class="btn btn-primary">Rent</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
